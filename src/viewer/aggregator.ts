@@ -52,15 +52,17 @@ export function mergeNames(source: string, target: string): string | null {
 }
 
 /**
- * @param sourceGroup A ProductGroup.
+ * @param sourceGroup A ProductGroup, or multiple.
  * @param targetName A group name.
  * @return A mapping from all purchases in the group to the given group name.
  */
-export function mapGroupToName(sourceGroup: ProductGroup, targetName: string): NameMappings {
+export function mapGroupToName(sourceGroup: ProductGroup | ProductGroup[], targetName: string): NameMappings {
     const newMappings: NameMappings = {};
-    for (const purchase of sourceGroup.purchases) {
-        if (purchase.item !== targetName) {
-            newMappings[purchase.item] = targetName;
+    for (const group of (Array.isArray(sourceGroup) ? sourceGroup : [sourceGroup])) {
+        for (const purchase of group.purchases) {
+            if (purchase.item !== targetName) {
+                newMappings[purchase.item] = targetName;
+            }
         }
     }
     return newMappings;

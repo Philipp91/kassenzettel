@@ -15,27 +15,31 @@ const NameMappingGroup: React.FC<{
     itemNames: Set<string>,
     onRename: () => void,
     onDelete: (itemName: string) => void,
-    onDrop: (droppedGroup: ProductGroup) => void
+    onDrop: (droppedGroups: ProductGroup[]) => void
 }> = (
     {groupName, itemNames, onRename, onDelete, onDrop}
 ) => {
-    const [{isOver}, drop] = useDrop<ProductGroup, {}, { isOver: boolean, dragItem: ProductGroup }>({
-        accept: 'ProductGroup',
-        canDrop: item => item.name !== groupName,
+    const [{isOver}, drop] = useDrop<ProductGroup | ProductGroup[], {}, { isOver: boolean, dragItem: ProductGroup }>({
+        accept: ['ProductGroup', 'Total'],
+        canDrop: item => Array.isArray(item) || item.name !== groupName,
         collect: (monitor) => ({
             isOver: monitor.isOver() && monitor.canDrop(),
             dragItem: monitor.getItem(),
         }),
         drop: item => {
-            onDrop(item);
+            onDrop(Array.isArray(item) ? item : [item]);
             return undefined;
         },
     });
     const sortedItemNames = Array.from(itemNames);
     sortedItemNames.sort();
     return <li ref={drop}>
-        <span style={{fontWeight: isOver ? 'bold' : 'normal', cursor: 'pointer', whiteSpace: 'nowrap'}}
-              onClick={onRename}>{groupName}</span>
+        <span style={{
+            fontWeight: isOver ? 'bold' : 'normal',
+            textDecoration: 'underline',
+            cursor: 'pointer',
+            whiteSpace: 'nowrap'
+        }} onClick={onRename}>{groupName}</span>
         {' = {'}
         {sortedItemNames.map(itemName => <span key={itemName} style={{margin: 6, whiteSpace: 'nowrap'}}>
             {itemName}
@@ -50,15 +54,15 @@ const NameMappingGroup: React.FC<{
     </li>;
 };
 
-const CreateNewGroup: React.FC<{ onDrop: (droppedGroup: ProductGroup) => void }> = ({onDrop}) => {
-    const [{isOver}, drop] = useDrop<ProductGroup, {}, { isOver: boolean, dragItem: ProductGroup }>({
-        accept: 'ProductGroup',
+const CreateNewGroup: React.FC<{ onDrop: (droppedGroups: ProductGroup[]) => void }> = ({onDrop}) => {
+    const [{isOver}, drop] = useDrop<ProductGroup | ProductGroup[], {}, { isOver: boolean, dragItem: ProductGroup }>({
+        accept: ['ProductGroup', 'Total'],
         collect: (monitor) => ({
             isOver: monitor.isOver() && monitor.canDrop(),
             dragItem: monitor.getItem(),
         }),
         drop: item => {
-            onDrop(item);
+            onDrop(Array.isArray(item) ? item : [item]);
             return undefined;
         },
     });
@@ -110,18 +114,21 @@ const NameMappingsEditor: React.FC<NameMappingsEditorProps> = (
                                       delete newMappings[itemName];
                                       onReplaceMappings(newMappings);
                                   }}
-                                  onDrop={droppedGroup => {
+                                  onDrop={droppedGroups => {
                                       onReplaceMappings({
                                           ...nameMappings,
-                                          ...mapGroupToName(droppedGroup, groupName),
+                                          ...mapGroupToName(droppedGroups, groupName),
                                       });
                                   }}/>)}
-            <CreateNewGroup onDrop={droppedGroup => {
-                const newName = prompt('Bitte den Namen für die neue Gruppe eingeben.', droppedGroup.name);
+            <CreateNewGroup onDrop={droppedGroups => {
+                const newName = prompt(
+                    'Bitte den Namen für die neue Gruppe eingeben.',
+                    droppedGroups.length === 1 ? droppedGroups[0].name : ''
+                );
                 if (!newName) return;
                 onReplaceMappings({
                     ...nameMappings,
-                    ...mapGroupToName(droppedGroup, newName),
+                    ...mapGroupToName(droppedGroups, newName),
                 });
             }}/>
         </ul>
