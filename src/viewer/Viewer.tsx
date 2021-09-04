@@ -49,8 +49,8 @@ const ProductGroupRow: React.FC<{ group: ProductGroup, onAddMappings: ViewerProp
     }
     const dragStyle: CSSProperties = {opacity: 0.5, transform: 'translateX(-20px)'};
     const overStyle: CSSProperties = {fontWeight: 'bold', transform: 'translateX(-20px)'};
-    return <tr ref={drag} style={isDragging ? dragStyle : {}}>
-        <td ref={drop} style={isOver ? overStyle : {}}>{displayName}</td>
+    return <tr ref={drop} style={isDragging ? dragStyle : {}}>
+        <td ref={drag} style={isOver ? overStyle : {}}>{displayName}</td>
         <td style={{textAlign: 'end'}}>{formatPrice(group.totalPrice)}</td>
         <td style={{textAlign: 'end'}}>{formatPercent(group.totalPrice / grandTotal)}</td>
     </tr>
