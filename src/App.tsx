@@ -25,26 +25,29 @@ function App() {
         loadPurchases('receipts-details.csv').catch(console.error);
     }, []);
 
-    const [nameMappings, setNameMappings] = useState<NameMappings>({});
-
     if (error) {
         return <div style={{textAlign: 'center', padding: 20}}>Error: {error}</div>;
     }
     if (!purchases) {
         return <div style={{textAlign: 'center', padding: 20}}>Loading...</div>;
     }
+    const [nameMappings, setNameMappings] = useState<NameMappings>(loadMappings() || {});
+    const setMappings = (newMappings: NameMappings) => {
+        setNameMappings(newMappings);
+        storeMappings(newMappings);
+    };
 
     const productGroups = aggregate(purchases, nameMappings);
     return <DndProvider backend={HTML5Backend}>
         <FlexRow style={{height: '100%'}}>
             <div style={{height: '100%', overflowY: 'auto'}}>
                 <Viewer productGroups={productGroups} nameMappings={nameMappings}
-                        onAddMappings={newMapings => setNameMappings(oldMappings => ({...oldMappings, ...newMapings}))}
-                        containerStyle={{margin: 20}}/>
+                        onAddMappings={newMapings => setMappings(({...nameMappings, ...newMapings}))}
+                        containerStyle={{margin: 30}}/>
             </div>
             <div style={{height: '100%', overflowY: 'auto', flexGrow: 1}}>
-                <NameMappingsEditor nameMappings={nameMappings} onReplaceMappings={setNameMappings}
-                                    containerStyle={{margin: 24}}/>
+                <NameMappingsEditor nameMappings={nameMappings} onReplaceMappings={setMappings}
+                                    containerStyle={{margin: 32}}/>
             </div>
         </FlexRow>
     </DndProvider>;
