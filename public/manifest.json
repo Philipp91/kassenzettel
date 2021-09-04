@@ -5,7 +5,8 @@
   "manifest_version": 3,
   "description": "Lädt Kassenzettel von Migros und fasst die Ausgaben zusammen.",
   "icons": {
-    "48": "logo48.png"
+    "48": "logo48.png",
+    "128": "logo128.png"
   },
   "permissions": [
     "storage",
@@ -28,7 +29,8 @@
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "48": "logo48.png"
+      "48": "logo48.png",
+      "128": "logo128.png"
     }
   }
 }
