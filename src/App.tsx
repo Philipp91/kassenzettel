@@ -54,7 +54,7 @@ const App: React.FC<{ purchases: Purchase[] }> = ({purchases}) => {
     const productGroups = aggregate(purchases, nameMappings);
     return <DndProvider backend={HTML5Backend}>
         <FlexRow style={{height: '100%'}}>
-            <div style={{height: '100%', overflowY: 'auto'}}>
+            <div style={{height: '100%', overflowY: 'auto', flexShrink: 0}}>
                 <Viewer productGroups={productGroups} nameMappings={nameMappings}
                         onAddMappings={newMapings => setMappings(({...nameMappings, ...newMapings}))}
                         containerStyle={{margin: 30}}/>

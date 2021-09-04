@@ -34,10 +34,10 @@ const NameMappingGroup: React.FC<{
     const sortedItemNames = Array.from(itemNames);
     sortedItemNames.sort();
     return <li ref={drop}>
-        <span style={{fontWeight: isOver ? 'bold' : 'normal', cursor: 'pointer'}}
+        <span style={{fontWeight: isOver ? 'bold' : 'normal', cursor: 'pointer', whiteSpace: 'nowrap'}}
               onClick={onRename}>{groupName}</span>
         {' = {'}
-        {sortedItemNames.map(itemName => <span key={itemName} style={{margin: 6}}>
+        {sortedItemNames.map(itemName => <span key={itemName} style={{margin: 6, whiteSpace: 'nowrap'}}>
             {itemName}
             <button
                 className="hide-button-unless-hovered"
@@ -117,7 +117,7 @@ const NameMappingsEditor: React.FC<NameMappingsEditorProps> = (
                                       });
                                   }}/>)}
             <CreateNewGroup onDrop={droppedGroup => {
-                const newName = prompt('Bitte den Namen für die neue Gruppe eingeben.');
+                const newName = prompt('Bitte den Namen für die neue Gruppe eingeben.', droppedGroup.name);
                 if (!newName) return;
                 onReplaceMappings({
                     ...nameMappings,
