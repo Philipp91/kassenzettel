@@ -60,7 +60,8 @@ const App: React.FC<{ purchases: Purchase[] }> = ({purchases}) => {
                         containerStyle={{margin: 30}}/>
             </div>
             <div style={{height: '100%', overflowY: 'auto', flexGrow: 1}}>
-                <NameMappingsEditor nameMappings={nameMappings} onReplaceMappings={setMappings}
+                <NameMappingsEditor originalPurchases={purchases}
+                                    nameMappings={nameMappings} onReplaceMappings={setMappings}
                                     containerStyle={{margin: 32}}/>
             </div>
         </FlexRow>

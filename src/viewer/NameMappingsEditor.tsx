@@ -3,6 +3,7 @@ import {useDrop} from "react-dnd";
 import {mapGroupToName} from "./aggregator";
 
 export interface NameMappingsEditorProps {
+    originalPurchases: Purchase[];
     nameMappings: NameMappings;
     onReplaceMappings: (newMappings: NameMappings) => void;
     containerStyle?: CSSProperties;
@@ -72,7 +73,7 @@ const CreateNewGroup: React.FC<{ onDrop: (droppedGroups: ProductGroup[]) => void
 };
 
 const NameMappingsEditor: React.FC<NameMappingsEditorProps> = (
-    {nameMappings, onReplaceMappings, containerStyle}
+    {nameMappings, originalPurchases, onReplaceMappings, containerStyle}
 ) => {
     const groups: Record<string, Set<string>> = {};
     for (const [itemName, groupName] of Object.entries(nameMappings)) {
@@ -104,9 +105,14 @@ const NameMappingsEditor: React.FC<NameMappingsEditorProps> = (
                 <NameMappingGroup key={groupName} groupName={groupName} itemNames={itemNames}
                                   onRename={() => {
                                       const newName = prompt('Gruppe umbenennen', groupName);
-                                      if (!newName) return;
+                                      if (!newName || newName === groupName) return;
                                       const newMappings = {...nameMappings};
-                                      for (const itemName of Array.from(itemNames)) newMappings[itemName] = newName;
+                                      for (const itemName of Array.from(itemNames)) {
+                                          newMappings[itemName] = newName;
+                                      }
+                                      if (originalPurchases.some(p => p.item === groupName)) {
+                                          newMappings[groupName] = newName;
+                                      }
                                       onReplaceMappings(newMappings);
                                   }}
                                   onDelete={(itemName) => {
