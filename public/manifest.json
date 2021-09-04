@@ -9,9 +9,10 @@
     "128": "logo128.png"
   },
   "permissions": [
-    "storage",
     "activeTab",
-    "scripting"
+    "downloads",
+    "scripting",
+    "storage"
   ],
   "background": {
     "service_worker": "background.js"

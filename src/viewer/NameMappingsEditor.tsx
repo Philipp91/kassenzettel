@@ -1,6 +1,8 @@
 import React, {CSSProperties} from "react";
 import {useDrop} from "react-dnd";
 import {mapGroupToName} from "./aggregator";
+import {downloadJson} from "../util/download";
+import Button from "./Button";
 
 export interface NameMappingsEditorProps {
     originalPurchases: Purchase[];
@@ -44,12 +46,7 @@ const NameMappingGroup: React.FC<{
         {' = {'}
         {sortedItemNames.map(itemName => <span key={itemName} style={{margin: 6, whiteSpace: 'nowrap'}}>
             {itemName}
-            <button
-                className="hide-button-unless-hovered"
-                style={{verticalAlign: "middle"}}
-                onClick={() => onDelete(itemName)}>
-                🗑
-            </button>
+            <Button icon="🗑" onClick={() => onDelete(itemName)}/>
         </span>)}
         {'}'}
     </li>;
@@ -89,15 +86,12 @@ const NameMappingsEditor: React.FC<NameMappingsEditorProps> = (
     return <div style={containerStyle}>
         <h4>
             Produkt-Zusammenfassungen
-            <button
-                className="hide-button-unless-hovered"
-                style={{verticalAlign: "middle"}}
-                onClick={() => {
-                    if (!window.confirm('Wirklich alle Zuweisungen löschen?')) return;
-                    onReplaceMappings({});
-                }}>
-                🗑
-            </button>
+            &nbsp;
+            <Button icon="🖫" onClick={() => downloadJson(nameMappings, 'kassenzettel-mappings.json')}/>
+            <Button icon="🗑" onClick={() => {
+                if (!window.confirm('Wirklich alle Zuweisungen löschen?')) return;
+                onReplaceMappings({});
+            }}/>
         </h4>
         {!sortedGroups.length && explanationText}
         <ul>

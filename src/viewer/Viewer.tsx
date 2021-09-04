@@ -1,7 +1,9 @@
 import React, {CSSProperties, useState} from "react";
-import {formatPercent, formatPrice} from "./formatter";
+import {formatDecimal, formatPercent, formatPrice} from "./formatter";
 import {useDrag, useDrop} from "react-dnd";
 import {mergeNames, proposeNewMappings} from "./aggregator";
+import Button from "./Button";
+import {download} from "../util/download";
 
 export interface ViewerProps {
     productGroups: ProductGroups;
@@ -70,6 +72,12 @@ const Viewer: React.FC<ViewerProps> = ({productGroups, onAddMappings, containerS
     } else if (sortField === 'price') {
         renderedGroups.sort((a, b) => b.totalPrice - a.totalPrice);
     }
+    const triggerCsvDownload = () => {
+        const csvData = 'Produkt;Gesamtpreis [Fr]\n'
+            + renderedGroups.map(g => `${g.name};${formatDecimal(g.totalPrice)}\n`).join('')
+            + `Total;${formatDecimal(grandTotal)}\n`;
+        download(csvData, 'text/csv', 'kassenzettel-analyse.csv');
+    };
     return <table style={containerStyle}>
         <thead>
         <tr>
@@ -78,6 +86,7 @@ const Viewer: React.FC<ViewerProps> = ({productGroups, onAddMappings, containerS
                 <input type="text" value={filter} placeholder="Filter"
                        style={{width: 80, marginLeft: 8}}
                        onInput={e => setFilter((e.target as HTMLInputElement).value.toLowerCase())}/>
+                <Button icon="🖫" onClick={triggerCsvDownload}/>
             </th>
             <th onClick={() => setSortField('price')} style={{textAlign: 'end'}}>
                 Gesamtpreis {sortField === 'price' && '▼'}
