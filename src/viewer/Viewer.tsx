@@ -1,5 +1,5 @@
 import React, {CSSProperties, useState} from "react";
-import {formatPrice} from "./formatter";
+import {formatPercent, formatPrice} from "./formatter";
 import {useDrag, useDrop} from "react-dnd";
 import {mergeNames, proposeNewMappings} from "./aggregator";
 
@@ -22,8 +22,8 @@ function sortProductGroups(productGroups: ProductGroups, sortField: SortField): 
     return result;
 }
 
-const ProductGroupRow: React.FC<{ group: ProductGroup, onAddMappings: ViewerProps['onAddMappings'] }> = (
-    {group, onAddMappings}
+const ProductGroupRow: React.FC<{ group: ProductGroup, onAddMappings: ViewerProps['onAddMappings'], grandTotal: number }> = (
+    {group, onAddMappings, grandTotal}
 ) => {
     const [{isDragging}, drag] = useDrag<ProductGroup, {}, { isDragging: boolean }>({
         type: 'ProductGroup',
@@ -52,21 +52,32 @@ const ProductGroupRow: React.FC<{ group: ProductGroup, onAddMappings: ViewerProp
     return <tr ref={drag} style={isDragging ? dragStyle : {}}>
         <td ref={drop} style={isOver ? overStyle : {}}>{displayName}</td>
         <td style={{textAlign: 'end'}}>{formatPrice(group.totalPrice)}</td>
+        <td style={{textAlign: 'end'}}>{formatPercent(group.totalPrice / grandTotal)}</td>
     </tr>
 };
 
 const Viewer: React.FC<ViewerProps> = ({productGroups, onAddMappings, containerStyle}) => {
     const [sortField, setSortField] = useState<SortField>('name');
+    const grandTotal = Object.values(productGroups).map(g => g.totalPrice).reduce((a, b) => a + b);
     return <table style={containerStyle}>
         <thead>
         <tr>
             <th onClick={() => setSortField('name')}>Produkt {sortField === 'name' && '▲'}</th>
-            <th onClick={() => setSortField('price')}>Gesamtpreis [Fr] {sortField === 'price' && '▼'}</th>
+            <th onClick={() => setSortField('price')}
+                style={{textAlign: 'end'}}>Gesamtpreis {sortField === 'price' && '▼'}</th>
+            <th onClick={() => setSortField('price')}
+                style={{textAlign: 'end'}}>Anteil {sortField === 'price' && '▼'}</th>
         </tr>
         </thead>
         <tbody>
         {sortProductGroups(productGroups, sortField).map(group =>
-            <ProductGroupRow key={group.name} group={group} onAddMappings={onAddMappings}/>)}
+            <ProductGroupRow key={group.name} group={group}
+                             onAddMappings={onAddMappings} grandTotal={grandTotal}/>)}
+        <tr>
+            <td><b>Total</b></td>
+            <td style={{textAlign: 'end'}}><b>{formatPrice(grandTotal)}</b></td>
+            <td style={{textAlign: 'end'}}><b>{formatPercent(1.0)}</b></td>
+        </tr>
         </tbody>
     </table>;
 };
