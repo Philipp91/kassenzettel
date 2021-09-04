@@ -7,3 +7,5 @@ interface Purchase {
     totalPrice: number;  // should be quantity*basePrice - rebate
     store: string;
 }
+
+type ProductGroups = Record<string, number>; // {name => total price}

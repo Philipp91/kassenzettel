@@ -17,3 +17,17 @@ export default function assert<T>(condition: T, message?: string): asserts condi
         throw new AssertionError(message);
     }
 }
+
+/**
+ * When you get `e` from a `catch` clause, this function helps convert it to a string for an error message.
+ * @param e Something from a `catch` clause.
+ */
+export function errorToString(e: unknown): string {
+    if (typeof e === 'string') {
+        return e;
+    } else if (e instanceof Error) {
+        return e.toString();
+    } else {
+        return JSON.stringify(e);
+    }
+}
