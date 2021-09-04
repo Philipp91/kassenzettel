@@ -3,12 +3,16 @@ import {errorToString} from "./util/assert";
 import {parseMigrosCsv} from "./parser/migros_parser";
 import Viewer from "./viewer/Viewer";
 import aggregate from "./viewer/aggregator";
-import {FlexCol} from "./util/flexbox";
+import {FlexRow} from "./util/flexbox";
+import NameMappingsEditor from "./viewer/NameMappingsEditor";
+import {HTML5Backend} from "react-dnd-html5-backend";
+import {DndProvider} from "react-dnd";
 
 function App() {
     const [purchases, setPurchases] = useState<Purchase[] | null>(null);
     const [error, setError] = useState<string | null>(null);
     useEffect(() => {
+        setPurchases(null);
         const loadPurchases = async (filename: string) => {
             try {
                 const response = await fetch(filename);
@@ -21,6 +25,8 @@ function App() {
         loadPurchases('receipts-details.csv').catch(console.error);
     }, []);
 
+    const [nameMappings, setNameMappings] = useState<NameMappings>({});
+
     if (error) {
         return <div style={{textAlign: 'center', padding: 20}}>Error: {error}</div>;
     }
@@ -28,10 +34,20 @@ function App() {
         return <div style={{textAlign: 'center', padding: 20}}>Loading...</div>;
     }
 
-    const productGroups = aggregate(purchases);
-    return <FlexCol alignItems="center">
-        <Viewer productGroups={productGroups}/>
-    </FlexCol>;
+    const productGroups = aggregate(purchases, nameMappings);
+    return <DndProvider backend={HTML5Backend}>
+        <FlexRow style={{height: '100%'}}>
+            <div style={{height: '100%', overflowY: 'auto'}}>
+                <Viewer productGroups={productGroups} nameMappings={nameMappings}
+                        onAddMappings={newMapings => setNameMappings(oldMappings => ({...oldMappings, ...newMapings}))}
+                        containerStyle={{margin: 20}}/>
+            </div>
+            <div style={{height: '100%', overflowY: 'auto', flexGrow: 1}}>
+                <NameMappingsEditor nameMappings={nameMappings} onReplaceMappings={setNameMappings}
+                                    containerStyle={{margin: 24}}/>
+            </div>
+        </FlexRow>
+    </DndProvider>;
 }
 
 export default App;

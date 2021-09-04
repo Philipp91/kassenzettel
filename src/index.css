@@ -12,4 +12,13 @@ code {
     monospace;
 }
 
+html, body, #root { height: 100%; }
+
+h1, h2, h3, h4, h5, h6 { margin-top: 0; }
+
 th { text-align: start; cursor: pointer; }
+
+.hide-button-unless-hovered:not(:hover) {
+  background: none;
+  border-color: transparent;
+}

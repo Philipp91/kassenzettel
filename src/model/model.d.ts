@@ -8,4 +8,12 @@ interface Purchase {
     store: string;
 }
 
-type ProductGroups = Record<string, number>; // {name => total price}
+interface ProductGroup {
+    name: string;
+    totalPrice: number;
+    purchases: Purchase[];
+}
+
+type ProductGroups = Record<string, ProductGroup>; // keyed by name
+
+type NameMappings = Record<string, string>; // No value should also appear as key.
