@@ -1,25 +1,34 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
-  "icons": [
+  "short_name": "Kassenzettel",
+  "name": "Kassenzettel",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "description": "Lädt Kassenzettel von Migros und fasst die Ausgaben zusammen.",
+  "icons": {
+    "48": "logo48.png"
+  },
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
-    },
-    {
-      "src": "logo192.png",
-      "type": "image/png",
-      "sizes": "192x192"
-    },
-    {
-      "src": "logo512.png",
-      "type": "image/png",
-      "sizes": "512x512"
+      "resources": [
+        "script.js"
+      ],
+      "matches": [
+        "https://www.migros.ch/*"
+      ]
     }
   ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "48": "logo48.png"
+    }
+  }
 }

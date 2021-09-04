@@ -7,8 +7,9 @@ import {FlexRow} from "./util/flexbox";
 import NameMappingsEditor from "./viewer/NameMappingsEditor";
 import {HTML5Backend} from "react-dnd-html5-backend";
 import {DndProvider} from "react-dnd";
+import {loadMappings, storeMappings} from "./model/storage";
 
-function App() {
+export const Demo: React.FC = () => {
     const [purchases, setPurchases] = useState<Purchase[] | null>(null);
     const [error, setError] = useState<string | null>(null);
     useEffect(() => {
@@ -31,6 +32,19 @@ function App() {
     if (!purchases) {
         return <div style={{textAlign: 'center', padding: 20}}>Loading...</div>;
     }
+    return <App purchases={purchases}/>;
+};
+
+export const ParsingApp: React.FC<{ csvDatas: string[] }> = ({csvDatas}) => {
+    try {
+        const purchases = csvDatas.flatMap(parseMigrosCsv);
+        return <App purchases={purchases}/>;
+    } catch (e) {
+        return <div>Error: {errorToString(e)}</div>;
+    }
+};
+
+const App: React.FC<{ purchases: Purchase[] }> = ({purchases}) => {
     const [nameMappings, setNameMappings] = useState<NameMappings>(loadMappings() || {});
     const setMappings = (newMappings: NameMappings) => {
         setNameMappings(newMappings);
@@ -51,6 +65,4 @@ function App() {
             </div>
         </FlexRow>
     </DndProvider>;
-}
-
-export default App;
+};
