@@ -82,7 +82,18 @@ const NameMappingsEditor: React.FC<NameMappingsEditorProps> = (
     const sortedGroups = Object.entries(groups);
     sortedGroups.sort((a, b) => a[0].localeCompare(b[0]));
     return <div style={containerStyle}>
-        <h4>Produkt-Zusammenfassungen</h4>
+        <h4>
+            Produkt-Zusammenfassungen
+            <button
+                className="hide-button-unless-hovered"
+                style={{verticalAlign: "middle"}}
+                onClick={() => {
+                    if (!window.confirm('Wirklich alle Zuweisungen löschen?')) return;
+                    onReplaceMappings({});
+                }}>
+                🗑
+            </button>
+        </h4>
         {!sortedGroups.length && explanationText}
         <ul>
             {sortedGroups.map(([groupName, itemNames]) =>
