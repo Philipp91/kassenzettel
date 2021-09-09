@@ -8,6 +8,8 @@ sodass man erfahren kann, für welche Produkte man am meisten ausgibt.
 Alle Daten werden ausschliesslich lokal im Browser verarbeitet und gespeichert.
 Insbesondere werden die von der Migros abgeholten Kassenbons nicht an irgendwelche Server im Internet gesendet.
 
+Download aus dem [Chrome Web Store](https://chrome.google.com/webstore/detail/kassenzettel/hpmncdpjaaiopnpanfjdkiinodlniekp).
+
 ## Available Scripts
 
 In the project directory, you can run:
