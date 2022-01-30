@@ -31,9 +31,11 @@ async function fetchAllHistoricalBons(fromDate, toDate) {
     chrome.runtime.sendMessage({progress: 'done', csvDatas});
 }
 
-chrome.runtime.onMessage.addListener(async ({fromDate, toDate}) => {
-    if (fromDate.length === 10 && toDate.length === 10) {
-        console.log(`Executing fetch from ${fromDate} to ${toDate}`);
-        await fetchAllHistoricalBons(fromDate, toDate);
-    }
-});
+if (!chrome.runtime.onMessage.hasListeners()) {
+    chrome.runtime.onMessage.addListener(async ({fromDate, toDate}) => {
+        if (fromDate.length === 10 && toDate.length === 10) {
+            console.log(`Executing fetch from ${fromDate} to ${toDate}`);
+            await fetchAllHistoricalBons(fromDate, toDate);
+        }
+    });
+}
