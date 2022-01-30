@@ -3,6 +3,7 @@ import {useDrop} from "react-dnd";
 import {mapGroupToName} from "./aggregator";
 import {downloadJson} from "../util/download";
 import Button from "./Button";
+import {showFileDialog} from "../util/file_dialog";
 
 export interface NameMappingsEditorProps {
     originalPurchases: Purchase[];
@@ -69,6 +70,25 @@ const CreateNewGroup: React.FC<{ onDrop: (droppedGroups: ProductGroup[]) => void
     </li>;
 };
 
+function validateNameMappings(value: unknown): value is NameMappings {
+    if (typeof value !== 'object') {
+        alert('Ungültiges Format: JSON-Objekt erwartet');
+        return false;
+    }
+    const mappings = value as Record<string | number | symbol, unknown>;
+    for (const [key, value] of Object.entries(mappings)) {
+        if (typeof value !== 'string') {
+            alert('Ungültiges Format: Nur JSON-Strings erwartet');
+            return false;
+        }
+        if (mappings[value]) {
+            alert(`Ungültiges Format: Gruppierung von ${key} via ${value} ist nicht endgültig`);
+            return false;
+        }
+    }
+    return true;
+}
+
 const NameMappingsEditor: React.FC<NameMappingsEditorProps> = (
     {nameMappings, originalPurchases, onReplaceMappings, containerStyle}
 ) => {
@@ -89,6 +109,12 @@ const NameMappingsEditor: React.FC<NameMappingsEditorProps> = (
             &nbsp;
             <Button icon="🖫" title="Gruppierungen speichern"
                     onClick={() => downloadJson(nameMappings, 'kassenzettel-mappings.json')}/>
+            <Button icon="🗁" title="Gruppierungen wiederherstellen" onClick={async () => {
+                const file = await showFileDialog('application/json');
+                const loadedMappings = JSON.parse(await file.text());
+                if (!validateNameMappings(loadedMappings)) return;
+                onReplaceMappings(loadedMappings);
+            }}/>
             <Button icon="🗑" title="Alle Gruppierungen löschen" onClick={() => {
                 if (!window.confirm('Wirklich alle Gruppierungen löschen?')) return;
                 onReplaceMappings({});
