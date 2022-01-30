@@ -33,6 +33,8 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 
 Builds the Chrome extension for production to the `dist` folder (via the `build` folder).\
 It correctly bundles React in production mode and optimizes the build for the best performance.
+To test in local Chrome, visit chrome://extensions, click "Load unpacked extension" and point it to the `build` folder.
+If there's an error, see crbug.com/1292363.
 
 ### `npm run release`
 
