@@ -51,18 +51,26 @@ const App: React.FC<{ purchases: Purchase[] }> = ({purchases}) => {
         storeMappings(newMappings);
     };
 
+    if (!purchases.length) return <div>Leerer Datensatz</div>;
+    const dates = purchases.map(p => p.datetime.getTime());
+    const minDate = new Date(Math.min.apply(null, dates));
+    const maxDate = new Date(Math.max.apply(null, dates));
+
     const productGroups = aggregate(purchases, nameMappings);
     return <DndProvider backend={HTML5Backend}>
         <FlexRow style={{height: '100%'}}>
-            <div style={{height: '100%', overflowY: 'auto', flexShrink: 0}}>
+            <FlexCol style={{height: '100%', overflowY: 'auto', flexShrink: 0}}>
+                <div style={{margin: '4px 8px'}}>
+                    Käufe von {minDate.toLocaleDateString()} bis {maxDate.toLocaleDateString()}
+                </div>
                 <Viewer productGroups={productGroups} nameMappings={nameMappings}
                         onAddMappings={newMapings => setMappings(({...nameMappings, ...newMapings}))}
-                        containerStyle={{margin: 30}}/>
-            </div>
+                        containerStyle={{margin: '0 30px 30px 30px'}}/>
+            </FlexCol>
             <div style={{height: '100%', overflowY: 'auto', flexGrow: 1}}>
                 <NameMappingsEditor originalPurchases={purchases}
                                     nameMappings={nameMappings} onReplaceMappings={setMappings}
-                                    containerStyle={{margin: 32}}/>
+                                    containerStyle={{margin: '40px 30px 30px 30px'}}/>
             </div>
         </FlexRow>
     </DndProvider>;
