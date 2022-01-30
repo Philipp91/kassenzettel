@@ -3,6 +3,7 @@ const instructions = document.getElementById('instructions');
 const fromDate = document.getElementById('fromDate');
 const toDate = document.getElementById('toDate');
 const goButton = document.getElementById('go');
+const importButton = document.getElementById('import');
 
 function dateToString(date) {
     return date.toISOString().substr(0, 10);
@@ -70,3 +71,5 @@ goButton.onclick = async () => {
         });
     });
 };
+
+importButton.onclick = () => chrome.tabs.create({url: 'index.html#import'});

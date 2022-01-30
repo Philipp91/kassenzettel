@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import {Demo, ParsingApp} from './App';
+import {ImportApp, ParsingApp} from './App';
 
 function render(content: React.ReactElement) {
     ReactDOM.render(
@@ -10,7 +10,10 @@ function render(content: React.ReactElement) {
     );
 }
 
-if (document.location.protocol === 'chrome-extension:') {
+const isDevServer = document.location.protocol !== 'chrome-extension:';
+if (window.location.hash === '#import' || isDevServer) {
+    render(<ImportApp/>);
+} else {
     render(<div>Loading...</div>);
     chrome.runtime.sendMessage({getCsv: true}, ({csvDatas}) => {
         if (csvDatas) {
@@ -19,6 +22,4 @@ if (document.location.protocol === 'chrome-extension:') {
             render(<div>Es sind keine Daten (mehr) vorhanden. Bitte diese Seite schliessen.</div>);
         }
     });
-} else { // Running in the React dev server
-    render(<Demo/>);
 }

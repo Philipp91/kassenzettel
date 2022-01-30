@@ -1,38 +1,53 @@
-import React, {useEffect, useState} from 'react';
-import {errorToString} from "./util/assert";
+import React, {useState} from 'react';
+import assert, {errorToString} from "./util/assert";
 import {parseMigrosCsv} from "./parser/migros_parser";
 import Viewer from "./viewer/Viewer";
 import aggregate from "./viewer/aggregator";
-import {FlexRow} from "./util/flexbox";
+import {FlexCol, FlexRow} from "./util/flexbox";
 import NameMappingsEditor from "./viewer/NameMappingsEditor";
 import {HTML5Backend} from "react-dnd-html5-backend";
 import {DndProvider} from "react-dnd";
 import {loadMappings, storeMappings} from "./model/storage";
+import {downloadJson} from "./util/download";
+import Button from "./viewer/Button";
+import {showFileDialog} from "./util/file_dialog";
 
-export const Demo: React.FC = () => {
+function assertValidJsonImport(value: unknown): asserts value is Purchase[] {
+    assert(Array.isArray(value));
+    for (const item of value) {
+        assert(typeof item === 'object');
+        assert(item.datetime && item.item && item.quantity);
+        if (typeof item.datetime === 'string') {
+            item.datetime = new Date(item.datetime);
+        }
+    }
+}
+
+export const ImportApp: React.FC = () => {
     const [purchases, setPurchases] = useState<Purchase[] | null>(null);
     const [error, setError] = useState<string | null>(null);
-    useEffect(() => {
-        setPurchases(null);
-        const loadPurchases = async (filename: string) => {
-            try {
-                const response = await fetch(filename);
-                const csvData = await response.text();
-                setPurchases(oldPurchases => [...(oldPurchases || []), ...parseMigrosCsv(csvData)]);
-            } catch (e) {
-                setError(errorToString(e));
-            }
-        };
-        loadPurchases('receipts-details.csv').catch(console.error);
-    }, []);
-
     if (error) {
         return <div style={{textAlign: 'center', padding: 20}}>Error: {error}</div>;
     }
-    if (!purchases) {
-        return <div style={{textAlign: 'center', padding: 20}}>Loading...</div>;
+    if (purchases) {
+        return <App purchases={purchases}/>;
     }
-    return <App purchases={purchases}/>;
+    return <Button icon="🗁 Öffnen" onClick={async () => {
+        try {
+            const file = await showFileDialog('application/json, text/csv');
+            const data = await file.text();
+            if (file.type === 'application/json') {
+                const importedPurchases = JSON.parse(data);
+                assertValidJsonImport(importedPurchases);
+                setPurchases(importedPurchases);
+            } else if (file.type === 'text/csv') {
+                setPurchases(oldPurchases => [...(oldPurchases || []), ...parseMigrosCsv(data)]);
+                console.error(file.type);
+            }
+        } catch (e) {
+            setError(errorToString(e));
+        }
+    }}/>;
 };
 
 export const ParsingApp: React.FC<{ csvDatas: string[] }> = ({csvDatas}) => {
