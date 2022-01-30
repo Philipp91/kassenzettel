@@ -62,6 +62,8 @@ const App: React.FC<{ purchases: Purchase[] }> = ({purchases}) => {
             <FlexCol style={{height: '100%', overflowY: 'auto', flexShrink: 0}}>
                 <div style={{margin: '4px 8px'}}>
                     Käufe von {minDate.toLocaleDateString()} bis {maxDate.toLocaleDateString()}
+                    <Button icon="🖫 Export" title="Ursprüngliche Kassenzettel exportieren"
+                            onClick={() => downloadJson(purchases, 'kassenzettel-purchases.json')}/>
                 </div>
                 <Viewer productGroups={productGroups} nameMappings={nameMappings}
                         onAddMappings={newMapings => setMappings(({...nameMappings, ...newMapings}))}
