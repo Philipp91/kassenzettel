@@ -36,6 +36,15 @@ async function init() {
 init().catch(console.error);
 
 goButton.onclick = async () => {
+    if (fromDate.value < fromDate.min || toDate.value < toDate.min) {
+        container.innerHTML = `Datum muss nach ${fromDate.min} sein.`;
+        return;
+    }
+    if (fromDate.value > fromDate.max || toDate.value > toDate.max) {
+        container.innerHTML = `Datum muss vor ${fromDate.min} sein.`;
+        return;
+    }
+
     goButton.disabled = true;
     goButton.innerText = 'Moment bitte...';
     chrome.runtime.onMessage.addListener(({progress}) => {
