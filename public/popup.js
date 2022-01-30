@@ -1,4 +1,5 @@
-const container = document.getElementById('instructions');
+const container = document.getElementById('container');
+const instructions = document.getElementById('instructions');
 const fromDate = document.getElementById('fromDate');
 const toDate = document.getElementById('toDate');
 const goButton = document.getElementById('go');
@@ -10,7 +11,8 @@ function dateToString(date) {
 async function init() {
     const activeTabs = await chrome.tabs.query({active: true, currentWindow: true});
     if (activeTabs.length !== 1) {
-        container.innerText = 'Aktueller Tab konnte nicht erkannt werden.';
+        container.style.display = 'none';
+        instructions.innerText = 'Aktueller Tab konnte nicht erkannt werden.';
         return;
     }
 
@@ -18,7 +20,8 @@ async function init() {
     const expectedUrl = 'https://www.migros.ch/de/cumulus/konto/kassenbons.html';
     if (!activeTab.url.startsWith(expectedUrl) || !activeTab.id) {
         console.log('Wrong URL', activeTab.url);
-        container.innerHTML = `Bitte auf die <a href="${expectedUrl}" target="_blank">Kassenbons-Seite</a> navigieren.`;
+        container.style.display = 'none';
+        instructions.innerHTML = `Bitte auf die <a href="${expectedUrl}" target="_blank">Kassenbons-Seite</a> navigieren.`;
         return;
     }
 
@@ -37,20 +40,21 @@ init().catch(console.error);
 
 goButton.onclick = async () => {
     if (fromDate.value < fromDate.min || toDate.value < toDate.min) {
-        container.innerHTML = `Datum muss nach ${fromDate.min} sein.`;
+        instructions.innerText = `Datum muss nach ${fromDate.min} sein.`;
         return;
     }
     if (fromDate.value > fromDate.max || toDate.value > toDate.max) {
-        container.innerHTML = `Datum muss vor ${fromDate.min} sein.`;
+        instructions.innerText = `Datum muss vor ${fromDate.min} sein.`;
         return;
     }
+    instructions.innerText = '';
 
     goButton.disabled = true;
     goButton.innerText = 'Moment bitte...';
     chrome.runtime.onMessage.addListener(({progress}) => {
         if (!progress) return;
         if (progress === 'done') {
-            goButton.innerText = 'Kassenzettel analysieren';
+            goButton.innerText = '➜ Kassenzettel herunterladen';
             goButton.disabled = false;
         } else {
             goButton.innerText = `${progress} Seiten geladen...`;
