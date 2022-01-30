@@ -37,7 +37,7 @@ const NameMappingGroup: React.FC<{
     });
     const sortedItemNames = Array.from(itemNames);
     sortedItemNames.sort();
-    return <li ref={drop}>
+    return <li ref={drop} style={{whiteSpace: 'nowrap', height: '1.2em'}}>
         <span style={{
             fontWeight: isOver ? 'bold' : 'normal',
             textDecoration: 'underline',
@@ -45,7 +45,7 @@ const NameMappingGroup: React.FC<{
             whiteSpace: 'nowrap'
         }} onClick={onRename}>{groupName}</span>
         {' = {'}
-        {sortedItemNames.map(itemName => <span key={itemName} style={{margin: 6, whiteSpace: 'nowrap'}}>
+        {sortedItemNames.map(itemName => <span key={itemName} style={{marginLeft: 6, whiteSpace: 'nowrap'}}>
             {itemName}
             <Button icon="🗑" onClick={() => onDelete(itemName)}/>
         </span>)}
