@@ -86,7 +86,7 @@ const Viewer: React.FC<ViewerProps> = ({productGroups, onAddMappings, containerS
                 <input type="text" value={filter} placeholder="Filter"
                        style={{width: 80, marginLeft: 8}}
                        onInput={e => setFilter((e.target as HTMLInputElement).value.toLowerCase())}/>
-                <Button icon="🖫" onClick={triggerCsvDownload}/>
+                <Button icon="🖫" title="Gruppierte Preise exportieren" onClick={triggerCsvDownload}/>
             </th>
             <th onClick={() => setSortField('price')} style={{textAlign: 'end'}}>
                 Gesamtpreis {sortField === 'price' && '▼'}

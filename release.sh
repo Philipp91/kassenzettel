@@ -8,7 +8,7 @@ release() {
     rm -f release.zip
     cd dist || return
     zip -r ../release.zip ./*
-    echo "Please upload release.zip to the Chrome store: "
+    echo "Please upload release.zip to the Chrome store."
 }
 
 release

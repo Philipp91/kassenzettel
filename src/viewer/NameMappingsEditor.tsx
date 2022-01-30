@@ -11,7 +11,7 @@ export interface NameMappingsEditorProps {
     containerStyle?: CSSProperties;
 }
 
-const explanationText = 'Produkte durch Ziehen mit der Maus in der Liste links zusammenfassen.';
+const explanationText = 'Produkte durch Ziehen mit der Maus in der Liste links gruppieren.';
 
 const NameMappingGroup: React.FC<{
     groupName: string,
@@ -85,11 +85,12 @@ const NameMappingsEditor: React.FC<NameMappingsEditorProps> = (
     sortedGroups.sort((a, b) => a[0].localeCompare(b[0]));
     return <div style={containerStyle}>
         <h4>
-            Produkt-Zusammenfassungen
+            Produkt-Gruppierungen
             &nbsp;
-            <Button icon="🖫" onClick={() => downloadJson(nameMappings, 'kassenzettel-mappings.json')}/>
-            <Button icon="🗑" onClick={() => {
-                if (!window.confirm('Wirklich alle Zuweisungen löschen?')) return;
+            <Button icon="🖫" title="Gruppierungen speichern"
+                    onClick={() => downloadJson(nameMappings, 'kassenzettel-mappings.json')}/>
+            <Button icon="🗑" title="Alle Gruppierungen löschen" onClick={() => {
+                if (!window.confirm('Wirklich alle Gruppierungen löschen?')) return;
                 onReplaceMappings({});
             }}/>
         </h4>
