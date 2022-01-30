@@ -22,8 +22,6 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.\
 You will also see any lint errors in the console.
 
-Make sure to download at least one CSV file from Migros and put it into `./public/receipts-details.csv`.
-
 ### `npm test`
 
 Launches the test runner in the interactive watch mode.\

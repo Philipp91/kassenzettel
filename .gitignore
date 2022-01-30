@@ -7,8 +7,7 @@
 
 # testing
 /coverage
-/public/receipts-*
-kassenzettel-mappings.json
+/data/
 
 # production
 /build
