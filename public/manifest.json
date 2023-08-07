@@ -11,8 +11,7 @@
   "permissions": [
     "activeTab",
     "downloads",
-    "scripting",
-    "storage"
+    "scripting"
   ],
   "background": {
     "service_worker": "background.js"
@@ -23,7 +22,7 @@
         "script.js"
       ],
       "matches": [
-        "https://www.migros.ch/*"
+        "https://cumulus.migros.ch/*"
       ]
     }
   ],
