@@ -51,14 +51,14 @@ goButton.onclick = async () => {
     instructions.innerText = '';
 
     goButton.disabled = true;
-    goButton.innerText = 'Moment bitte...';
+    goButton.innerText = 'Moment... (dieses Popup bitte offen lassen!)';
     chrome.runtime.onMessage.addListener(({progress}) => {
         if (!progress) return;
         if (progress === 'done') {
             goButton.innerText = '➜ Kassenzettel herunterladen';
             goButton.disabled = false;
         } else {
-            goButton.innerText = `${progress} Seiten geladen...`;
+            goButton.innerText = `${progress} Seiten geladen... (dieses Popup bitte offen lassen!)`;
         }
     });
     chrome.scripting.executeScript({
