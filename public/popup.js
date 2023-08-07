@@ -18,7 +18,7 @@ async function init() {
     }
 
     const activeTab = activeTabs[0];
-    const expectedUrl = 'https://www.migros.ch/de/cumulus/konto/kassenbons.html';
+    const expectedUrl = 'https://cumulus.migros.ch/de/konto/kassenbons.html';
     if (!activeTab.url.startsWith(expectedUrl) || !activeTab.id) {
         console.log('Wrong URL', activeTab.url);
         container.style.display = 'none';

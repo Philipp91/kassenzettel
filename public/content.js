@@ -8,18 +8,18 @@ async function fetchHistoricalBonsPage(url) {
     for (const match of mainPage.matchAll(/<input name="(checkbox[0-9]+)" value="([0-9_]+)" type="hidden">/g)) {
         formData.set(match[1], match[2]);
     }
-    const csvResponse = await fetch('https://www.migros.ch/service/avantaReceiptExport/csv.csv', {
+    const csvResponse = await fetch('https://cumulus.migros.ch/service/avantaReceiptExport/csv.csv', {
         method: 'post',
         body: formData
     });
     const csvData = await csvResponse.text();
 
-    const nextPageMatch = mainPage.match(/<a [^>]*href="(\/de\/cumulus\/konto\/kassenbons\.html\?[^"]*)" [^>]*rel="next"/);
-    return [csvData, nextPageMatch ? 'https://www.migros.ch' + nextPageMatch[1].replaceAll('&amp;', '&') : null];
+    const nextPageMatch = mainPage.match(/<a [^>]*href="(\/de\/konto\/kassenbons\.html\?[^"]*)" [^>]*rel="next"/);
+    return [csvData, nextPageMatch ? 'https://cumulus.migros.ch' + nextPageMatch[1].replaceAll('&amp;', '&') : null];
 }
 
 async function fetchAllHistoricalBons(fromDate, toDate) {
-    let url = `https://www.migros.ch/de/cumulus/konto/kassenbons.html?period=${fromDate}_${toDate}`;
+    let url = `https://cumulus.migros.ch/de/konto/kassenbons.html?period=${fromDate}_${toDate}`;
     let csvData;
     const csvDatas = [];
     while (url) {
