@@ -16,7 +16,7 @@ function parseLine(line: string): Purchase {
     const totalPrice = parseNumber(cells[8]);
     return {
         datetime: parseGermanDatetime(cells[0], cells[1]),
-        item: cells[5].trim().replaceAll(/(\.)(\w)/g, '$1 $2'),
+        item: cells[5].trim().replaceAll(/(\.)([^\d\W])/g, '$1 $2'),
         basePrice: roundPrice((totalPrice + rebate) / quantity),
         quantity, rebate, totalPrice,
         store: cells[2],
